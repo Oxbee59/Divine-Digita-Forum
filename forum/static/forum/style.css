@@ -1,0 +1,45 @@
+/* THEME COLORS */
+.bg-green {
+    background-color: #0ba360;
+}
+
+.btn-green {
+    background-color: #0ba360;
+    color: white;
+}
+
+.btn-green:hover {
+    background-color: #08874d;
+    color: #fff;
+}
+
+/* SIDEBAR */
+.sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    height: 100vh;
+    position: fixed;
+}
+
+.sidebar .sidebar-link {
+    color: white;
+    display: block;
+    padding: 10px 0;
+}
+
+.sidebar .sidebar-link:hover {
+    color: #c1ffd7;
+}
+
+.content {
+    margin-left: 260px;
+}
+
+@media(max-width: 768px){
+    .sidebar {
+        display: none;
+    }
+    .content {
+        margin-left: 0;
+    }
+}

@@ -1,0 +1,59 @@
+{% extends "forum/base.html" %}
+
+{% block sidebar_links %}
+<a href="{% url 'admin_dashboard' %}" class="sidebar-link">🏠 Dashboard</a>
+<a href="{% url 'manage_users' %}" class="sidebar-link">👥 Manage Users</a>
+<a href="{% url 'manage_posts' %}" class="sidebar-link active">📝 Manage Posts</a>
+<a href="{% url 'admin_messages' %}" class="sidebar-link">✉️ Customer Messages</a>
+<a href="{% url 'logout' %}" class="sidebar-link">🚪 Logout</a>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Manage Posts</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Author</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for post in uploads %}
+        <tr>
+            <td>{{ post.id }}</td>
+            <td>{{ post.title }}</td>
+            <td>{{ post.category.name }}</td>
+            <td>{{ post.user.username }}</td>
+            <td>{{ post.created_at|date:"M d, Y" }}</td>
+            <td>
+                <form method="post" action="{% url 'edit_post' post.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-edit">✏️ Edit</button>
+                </form>
+                <form method="post" action="{% url 'delete_post' post.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-delete">🗑️ Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align:center;">No posts found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<style>
+.table { width:100%; border-collapse: collapse; margin-top: 20px;}
+.table th, .table td { border:1px solid #ddd; padding:10px; text-align:left; }
+.table th { background:#0b7d36; color:white; }
+.btn { padding:5px 10px; border-radius:6px; color:white; text-decoration:none; margin-right:5px; border:none; cursor:pointer; }
+.btn-edit { background:#0b7d36; }
+.btn-delete { background:#c0392b; }
+.btn:hover { opacity:0.9; }
+</style>
+{% endblock %}

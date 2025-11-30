@@ -1,0 +1,103 @@
+{% extends "forum/base.html" %}
+{% block sidebar_links %}{% endblock %}
+
+{% block content %}
+<style>
+/* reuse same minimal styles */
+.form-card {
+  max-width:480px;
+  margin:40px auto;
+  padding:20px;
+  background:#fff;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+.input {
+  width:100%;
+  padding:12px;
+  margin-bottom:14px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  box-sizing:border-box;
+}
+.btn {
+  width:100%;
+  padding:12px;
+  background:#0b7d36;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+.alert-box { padding:10px 14px; margin-bottom:14px; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.06); }
+.alert-success { background:#e8fff3; color:#037d50; border-left:4px solid #04a96d; }
+.alert-error { background:#ffeaea; color:#b30000; border-left:4px solid #e60000; }
+.pw-toggle { position: absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:#0b7d36; cursor:pointer; font-weight:600; }
+.input-wrap { position:relative; }
+@media (max-width:600px){ .form-card{ margin:20px 16px; } }
+</style>
+
+<div class="form-card">
+  <h2 style="text-align:center; margin-bottom:10px;">Create Account</h2>
+  <p style="text-align:center; color:#555; margin-bottom:18px;">Join Divine Digital Forum and access exclusive discussions.</p>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert-box {% if 'error' in message.tags %}alert-error{% else %}alert-success{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <label>Username</label>
+    <input type="text" name="username" required class="input" autocomplete="username">
+
+    <label>Email</label>
+    <input type="email" name="email" required class="input" autocomplete="email">
+
+    <label>Password</label>
+    <div class="input-wrap" style="margin-bottom:12px;">
+      <!-- FIXED: name="password" -->
+      <input id="reg-password1" type="password" name="password" required class="input" style="padding-right:70px;">
+      <button type="button" class="pw-toggle" data-target="reg-password1">View</button>
+    </div>
+
+    <label>Confirm Password</label>
+    <div class="input-wrap" style="margin-bottom:14px;">
+      <input id="reg-password2" type="password" name="password2" required class="input" style="padding-right:70px;">
+      <button type="button" class="pw-toggle" data-target="reg-password2">View</button>
+    </div>
+
+    <button type="submit" class="btn">Register</button>
+  </form>
+
+  <p style="text-align:center; margin-top:16px; color:#555;">
+    Already have an account?
+    <a href="{% url 'login' %}" style="color:#0b7d36; font-weight:600;">Login here</a>
+  </p>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const toggles = document.querySelectorAll('.pw-toggle');
+  toggles.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const targetId = btn.getAttribute('data-target');
+      const field = document.getElementById(targetId);
+      if (!field) return;
+      if (field.type === 'password') {
+        field.type = 'text';
+        btn.textContent = 'Hide';
+      } else {
+        field.type = 'password';
+        btn.textContent = 'View';
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

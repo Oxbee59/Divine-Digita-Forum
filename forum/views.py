@@ -1,0 +1,224 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+from .models import UploadItem, Category, Message, Comment
+from .forms import SignupForm, UploadItemForm, CategoryForm, MessageForm, CommentForm
+
+# ----------------- AUTH -----------------
+def signup(request):
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '').strip()
+        password2 = request.POST.get('password2', '').strip()
+
+        if not username or not email or not password or not password2:
+            messages.error(request, 'All fields are required.')
+            return render(request, 'forum/register.html')
+
+        if password != password2:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'forum/register.html')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists.')
+            return render(request, 'forum/register.html')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email already in use.')
+            return render(request, 'forum/register.html')
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        messages.success(request, 'Account created successfully! You can now log in.')
+        return redirect('login')
+
+    return render(request, 'forum/register.html')
+
+
+def login_view(request):
+    if request.method == "GET":
+        return render(request, "forum/login.html")
+
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+
+    user = authenticate(request, username=username, password=password)
+    if user:
+        login(request, user)
+        if user.is_staff:
+            return redirect("admin_dashboard")
+        return redirect("customer_dashboard")
+    messages.error(request, "Invalid login credentials.")
+    return redirect("login")
+
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, "Logged out successfully.")
+    return redirect("login")
+
+# ----------------- SUPERADMIN -----------------
+@user_passes_test(lambda u: u.is_staff)
+def admin_dashboard(request):
+    total_users = User.objects.count()
+    total_posts = UploadItem.objects.count()
+    total_categories = Category.objects.count()
+    total_messages = Message.objects.count()
+
+    context = {
+        "total_users": total_users,
+        "total_posts": total_posts,
+        "total_categories": total_categories,
+        "total_messages": total_messages,
+    }
+    return render(request, "forum/admin_dashboard.html", context)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def manage_users(request):
+    users = User.objects.all()
+    return render(request, "forum/admin_manage_users.html", {"users": users})
+
+
+# Manage Posts
+@user_passes_test(lambda u: u.is_staff)
+def manage_posts(request):
+    uploads = UploadItem.objects.select_related('user', 'category').all()
+    return render(request, "forum/admin_manage_posts.html", {"uploads": uploads})
+
+@user_passes_test(lambda u: u.is_staff)
+def post_add(request):
+    if request.method == "POST":
+        form = UploadItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            messages.success(request, "Post created successfully.")
+            return redirect("manage_posts")
+    else:
+        form = UploadItemForm()
+    return render(request, "forum/post_form.html", {"form": form, "title": "Create Post"})
+
+@user_passes_test(lambda u: u.is_staff)
+def post_edit(request, pk):
+    post = get_object_or_404(UploadItem, pk=pk)
+    if request.method == "POST":
+        form = UploadItemForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Post updated successfully.")
+            return redirect("manage_posts")
+    else:
+        form = UploadItemForm(instance=post)
+    return render(request, "forum/post_form.html", {"form": form, "title": "Edit Post"})
+
+@user_passes_test(lambda u: u.is_staff)
+def post_delete(request, pk):
+    post = get_object_or_404(UploadItem, pk=pk)
+    if request.method == "POST":
+        post.delete()
+        messages.success(request, "Post deleted successfully.")
+        return redirect("manage_posts")
+    return render(request, "forum/post_confirm_delete.html", {"post": post})
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_messages(request):
+    messages_list = Message.objects.select_related('user').all()
+    return render(request, "forum/admin_messages.html", {"messages": messages_list})
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_uploads(request):
+    categories = Category.objects.all()
+    uploads = UploadItem.objects.select_related('user', 'category').all().order_by('-created_at')
+
+    if request.method == "POST":
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        category_id = request.POST.get('category')
+        category = Category.objects.get(id=category_id) if category_id else None
+        link = request.POST.get('link')
+        image = request.FILES.get('image')
+        video = request.FILES.get('video')
+
+        UploadItem.objects.create(
+            user=request.user,
+            title=title,
+            description=description,
+            category=category,
+            link=link,
+            image=image,
+            video=video
+        )
+        messages.success(request, "Upload added successfully.")
+        return redirect("admin_uploads")
+
+    return render(request, "forum/admin_uploads.html", {"uploads": uploads, "categories": categories})
+
+# ----------------- CUSTOMER -----------------
+@login_required
+def customer_dashboard(request):
+    uploads = UploadItem.objects.select_related('user', 'category').all().order_by('-created_at')
+    return render(request, "forum/customer_dashboard.html", {"uploads": uploads})
+
+
+@login_required
+def profile(request):
+    return render(request, "forum/profile.html")
+
+
+@login_required
+def contact_admin(request):
+    if request.method == "POST":
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        Message.objects.create(user=request.user, subject=subject, message=message)
+        messages.success(request, "Message sent to admin successfully!")
+        return redirect("contact_admin")
+    return render(request, "forum/contact_admin.html")
+
+
+# ----------------- FORUM -----------------
+def forum_index(request):
+    posts = UploadItem.objects.select_related('user', 'category').all().order_by('-created_at')[:6]
+    return render(request, "forum/index.html", {"posts": posts})
+
+
+def forum_detail(request, pk):
+    post = get_object_or_404(UploadItem, pk=pk)
+    comments = post.comments.select_related('user').all()
+    return render(request, "forum/detail.html", {"post": post, "comments": comments})
+
+@user_passes_test(lambda u: u.is_staff)
+def edit_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if request.method == "POST":
+        user.username = request.POST.get("username")
+        user.email = request.POST.get("email")
+        user.is_staff = True if request.POST.get("is_staff") == "on" else False
+        user.save()
+        messages.success(request, "User updated successfully.")
+    return redirect("manage_users")
+
+
+@user_passes_test(lambda u: u.is_staff)
+def delete_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if request.method == "POST":
+        user.delete()
+        messages.success(request, "User deleted successfully.")
+    return redirect("manage_users")
+
+
+@user_passes_test(lambda u: u.is_staff)
+def delete_message(request, pk):
+    msg = get_object_or_404(Message, pk=pk)
+    if request.method == "POST":
+        msg.delete()
+        messages.success(request, "Message deleted successfully.")
+        return redirect("admin_messages")
+    return redirect("admin_messages")

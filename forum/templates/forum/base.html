@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Divine Digital Forum</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            margin: 0;
+            background: #f4fdf4;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            width: 100%;
+            height: 60px;
+            background: #0b7d36;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .navbar .app-name {
+            font-weight: bold;
+            font-size: 18px;
+            flex: 1;
+        }
+
+        .navbar .sidebar-btn,
+        .navbar .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background: #0b7d36;
+            color: white;
+            position: fixed;
+            top: 60px; /* below navbar */
+            left: 0;
+            transition: all 0.3s ease;
+            padding-top: 20px;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px 20px;
+            color: white;
+            text-decoration: none;
+            transition: 0.2s;
+            font-size: 16px;
+        }
+
+        .sidebar a:hover {
+            background: #0d8e3d;
+            transform: translateX(5px);
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+        }
+
+        /* MAIN CONTENT */
+        .content {
+            margin-left: 260px;
+            padding: 80px 25px 25px 25px; /* add top padding for navbar */
+            transition: 0.3s;
+        }
+
+        .content.expanded {
+            margin-left: 20px;
+        }
+
+        /* CARD STYLE */
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        /* FOOTER */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            color: #444;
+            font-size: 14px;
+        }
+
+        footer span {
+            color: #0b7d36;
+            font-weight: bold;
+        }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -260px;
+                width: 240px;
+                position: fixed;
+            }
+            .sidebar.show { left: 0; }
+            .sidebar.hidden { left: -260px; }
+            .content {
+                margin-left: 20px !important;
+                padding: 80px 15px 15px 15px;
+            }
+        }
+    </style>
+
+    <script>
+function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const content = document.getElementById("content");
+
+    if (sidebar.classList.contains("show")) {
+        sidebar.classList.remove("show");
+        sidebar.classList.add("hidden");
+    } else {
+        sidebar.classList.add("show");
+        sidebar.classList.remove("hidden");
+    }
+
+    content.classList.toggle("expanded");
+}
+</script>
+
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <span class="app-name">Divine Digital Forum</span>
+        <button class="sidebar-btn" onclick="toggleSidebar()">☰</button>
+        <button class="close-btn" onclick="toggleSidebar()">*</button>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar hidden" id="sidebar">
+        <h2>Divine Forum</h2>
+        {% block sidebar_links %}
+        <a href="{% url 'admin_dashboard' %}">🏠 Dashboard</a>
+        <a href="{% url 'manage_users' %}">👥 Manage Users</a>
+        <a href="{% url 'manage_posts' %}">📝 Manage Posts</a>
+        <a href="{% url 'admin_uploads' %}">📂 Uploads</a>
+        <a href="{% url 'admin_messages' %}">✉️ Customer Messages</a>
+        <a href="{% url 'logout' %}">🚪 Logout</a>
+        {% endblock %}
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content" id="content">
+        {% block content %}{% endblock %}
+
+        <footer>
+            © {{ now|date:"Y" }} <span>Divine Digital Forum</span>. All Rights Reserved.<br>
+            Powered by <span>Hummingbird Digital Solutions</span>.
+        </footer>
+    </div>
+
+</body>
+</html>

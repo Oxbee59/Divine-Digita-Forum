@@ -1,0 +1,113 @@
+{% extends "forum/base.html" %}
+{% block sidebar_links %}{% endblock %}
+
+{% block content %}
+<style>
+/* card */
+.form-card {
+  max-width:480px;
+  margin:40px auto;
+  padding:20px;
+  background:#fff;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* inputs/buttons */
+.input {
+  width:100%;
+  padding:12px;
+  margin-bottom:14px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  box-sizing:border-box;
+}
+.btn {
+  width:100%;
+  padding:12px;
+  background:#0b7d36;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+/* messages */
+.alert-box { padding:10px 14px; margin-bottom:14px; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.06); }
+.alert-success { background:#e8fff3; color:#037d50; border-left:4px solid #04a96d; }
+.alert-error { background:#ffeaea; color:#b30000; border-left:4px solid #e60000; }
+
+/* small helper for toggle */
+.pw-toggle {
+  position: absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  background:none;
+  border:none;
+  color:#0b7d36;
+  cursor:pointer;
+  font-weight:600;
+}
+.input-wrap { position:relative; }
+@media (max-width:600px){ .form-card{ margin:20px 16px; } }
+</style>
+
+<div class="form-card">
+  <h2 style="text-align:center; margin-bottom:10px;">Welcome Back</h2>
+  <p style="text-align:center; color:#555; margin-bottom:18px;">Login to Divine Digital Forum</p>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert-box {% if 'error' in message.tags %}alert-error{% else %}alert-success{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    
+    <!-- Hidden next input -->
+    <input type="hidden" name="next" value="{{ next }}">
+
+    <label>Username</label>
+    <input type="text" name="username" required class="input" autocomplete="username">
+
+    <label style="display:block; margin-bottom:6px;">Password</label>
+    <div class="input-wrap" style="margin-bottom:16px;">
+      <input id="login-password" type="password" name="password" required class="input" autocomplete="current-password" style="padding-right:70px;">
+      <button type="button" class="pw-toggle" data-target="login-password">View</button>
+    </div>
+
+    <button type="submit" class="btn">Login</button>
+  </form>
+
+  <p style="text-align:center; margin-top:16px; color:#555;">
+    Don't have an account?
+    <a href="{% url 'register' %}" style="color:#0b7d36; font-weight:600;">Join Divine Digital Forum</a>
+  </p>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // attach toggle listeners safely (only if element exists)
+  const toggles = document.querySelectorAll('.pw-toggle');
+  toggles.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const targetId = btn.getAttribute('data-target');
+      const field = document.getElementById(targetId);
+      if (!field) return;
+      if (field.type === 'password') {
+        field.type = 'text';
+        btn.textContent = 'Hide';
+      } else {
+        field.type = 'password';
+        btn.textContent = 'View';
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

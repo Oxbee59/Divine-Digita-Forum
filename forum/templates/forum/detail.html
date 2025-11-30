@@ -1,0 +1,41 @@
+{% extends "forum/base.html" %}
+
+{% block sidebar_links %}
+<a href="{% url 'customer_dashboard' %}" class="sidebar-link">🏠 Dashboard</a>
+<a href="{% url 'profile' %}" class="sidebar-link">👤 Profile</a>
+<a href="{% url 'contact_admin' %}" class="sidebar-link">✉️ Contact Admin</a>
+<a href="{% url 'logout' %}" class="sidebar-link">🚪 Logout</a>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">📄 {{ post.title }}</h1>
+
+<div class="card">
+    {% if post.image %}
+        <img src="{{ post.image.url }}" class="card-img" alt="{{ post.title }}">
+    {% endif %}
+    {% if post.video %}
+        <video src="{{ post.video.url }}" controls class="card-video"></video>
+    {% endif %}
+    <p>{{ post.description }}</p>
+    {% if post.category %}
+        <p>📂 <strong>Category:</strong> {{ post.category.name }}</p>
+    {% endif %}
+    <p>👤 <strong>Author:</strong> {{ post.user.username }}</p>
+    <p>🕒 <strong>Posted on:</strong> {{ post.created_at|date:"F j, Y, g:i a" }}</p>
+    {% if post.link %}
+        <p>🔗 <a href="{{ post.link }}" target="_blank">{{ post.link }}</a></p>
+    {% endif %}
+</div>
+
+<a href="{% url 'customer_dashboard' %}" class="btn-view" style="margin-top:15px; display:inline-block;">⬅️ Go Back Home</a>
+
+<style>
+.card { background:#f0fff4; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow:0 4px 6px rgba(0,0,0,0.1);}
+.card-img { width:100%; max-height:300px; object-fit:cover; margin-bottom:10px; border-radius:6px;}
+.card-video { width:100%; max-height:400px; margin-bottom:10px; border-radius:6px;}
+.page-title { color:#0b7d36; margin-bottom:20px; text-align:center; }
+.btn-view { padding:8px 15px; background:#0b7d36; color:white; border-radius:6px; text-decoration:none; }
+.btn-view:hover { opacity:0.9; }
+</style>
+{% endblock %}

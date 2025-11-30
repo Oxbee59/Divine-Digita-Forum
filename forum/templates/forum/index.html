@@ -1,0 +1,18 @@
+{% extends "forum/base.html" %}
+
+{% block content %}
+<h1 class="page-title">Welcome to Divine Digital Forum</h1>
+<p style="text-align:center;">Connect with others, share ideas, and explore discussions.</p>
+
+<div style="text-align:center; margin-top:20px;">
+    <a href="{% url 'login' %}" class="btn">Login</a>
+    <a href="{% url 'signup' %}" class="btn btn-outline">Register</a>
+</div>
+
+<style>
+.page-title { color:#0b7d36; margin-bottom:15px; text-align:center; }
+.btn { padding:10px 20px; border-radius:8px; background:#0b7d36; color:white; text-decoration:none; margin:5px; display:inline-block;}
+.btn-outline { background:white; color:#0b7d36; border:2px solid #0b7d36; }
+.btn:hover { opacity:0.9; }
+</style>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "forum/base.html" %}
+
+{% block sidebar_links %}
+<a href="{% url 'customer_dashboard' %}" class="sidebar-link">🏠 Dashboard</a>
+<a href="{% url 'profile' %}" class="sidebar-link">👤 Profile</a>
+<a href="{% url 'contact_admin' %}" class="sidebar-link active">✉️ Contact Admin</a>
+<a href="{% url 'logout' %}" class="sidebar-link">🚪 Logout</a>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">✉️ Contact Admin</h1>
+
+<div class="card" style="max-width:600px; margin:auto;">
+    <form method="post">
+        {% csrf_token %}
+        <label>Subject</label>
+        <input type="text" name="subject" class="input" required>
+
+        <label>Message</label>
+        <textarea name="message" rows="5" class="input" required></textarea>
+
+        <button type="submit" class="btn">Send Message</button>
+    </form>
+</div>
+
+<style>
+.input { width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; margin-bottom:15px; }
+.btn { padding:12px 20px; background:#0b7d36; color:white; border:none; border-radius:8px; cursor:pointer; }
+.btn:hover { opacity:0.9; }
+.page-title { color:#0b7d36; margin-bottom:20px; text-align:center; }
+</style>
+{% endblock %}

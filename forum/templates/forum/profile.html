@@ -1,0 +1,24 @@
+{% extends "forum/base.html" %}
+
+{% block sidebar_links %}
+<a href="{% url 'customer_dashboard' %}" class="sidebar-link">🏠 Dashboard</a>
+<a href="{% url 'profile' %}" class="sidebar-link active">👤 Profile</a>
+<a href="{% url 'contact_admin' %}" class="sidebar-link">✉️ Contact Admin</a>
+<a href="{% url 'logout' %}" class="sidebar-link">🚪 Logout</a>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">👤 My Profile</h1>
+
+<div class="profile-card">
+    <p>🆔 <strong>Username:</strong> {{ user.username }}</p>
+    <p✉️ <strong>Email:</strong> {{ user.email }}</p>
+    <p>📅 <strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+</div>
+
+<style>
+.profile-card { background:#f0fff4; padding:20px; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1); max-width:400px; margin:auto;}
+.profile-card p { margin-bottom:10px; }
+.page-title { color:#0b7d36; margin-bottom:20px; text-align:center; }
+</style>
+{% endblock %}
