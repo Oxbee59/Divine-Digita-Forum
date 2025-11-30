@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: divine-digital-forum
+    env: python
+    region: oregon
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn forum_project.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+      - key: DJANGO_SETTINGS_MODULE
+        value: forum_project.settings
