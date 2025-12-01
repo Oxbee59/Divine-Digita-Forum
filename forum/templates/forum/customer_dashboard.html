@@ -16,25 +16,35 @@
         {% if post.image %}
         <img src="{{ post.image.url }}" alt="{{ post.title }}" class="card-img">
         {% endif %}
+
         {% if post.video %}
         <video controls class="card-video">
             <source src="{{ post.video.url }}" type="video/mp4">
         </video>
         {% endif %}
+
         <div class="card-icon">📝</div>
+
         <h3>{{ post.title }}</h3>
-        <p>{{ post.description|truncatechars:100 }}</p>
-        {% if post.category %}
-        <p><strong>Category:</strong> {{ post.category.name }}</p>
-        {% endif %}
+        <p>{{ post.description|truncatechars:120 }}</p>
+
+        <div class="card-meta">
+            {% if post.category %}
+            <span class="meta-item">📂 {{ post.category.name }}</span>
+            {% endif %}
+            <span class="meta-item">👤 {{ post.user.username }}</span>
+            <span class="meta-item">🕒 {{ post.created_at|date:"M d, Y" }}</span>
+        </div>
+
         {% if post.link %}
-        <p>🔗 <a href="{{ post.link }}" target="_blank">{{ post.link }}</a></p>
+        <p class="external-link">🔗 <a href="{{ post.link }}" target="_blank">{{ post.link|truncatechars:30 }}</a></p>
         {% endif %}
-        <p><strong>Author:</strong> {{ post.user.username }}</p>
-        <a href="{% url 'forum_detail' post.id %}" class="btn btn-green">View Details</a>
+
+        <a href="{% url 'forum_detail' post.id %}" class="btn btn-view">View Details ➡️</a>
     </div>
     {% empty %}
-    <p style="text-align:center;">No posts yet.</p>
+    <p style="text-align:center;">No posts yet. 📭</p>
     {% endfor %}
 </div>
+
 {% endblock %}

@@ -5,6 +5,10 @@
   --bg: #f4fdf4;
   --card-bg: #f0fff4;
   --text-dark: #0b7d36;
+  --btn-hover-scale: 1.05;
+  --card-hover-scale: 1.03;
+  --transition-fast: 0.18s ease;
+  --transition-medium: 0.25s ease;
 }
 
 body {
@@ -14,7 +18,7 @@ body {
   color: #222;
 }
 
-/* NAVBAR small helpers (for base.html icons) */
+/* NAVBAR small helpers */
 .navbar .sidebar-btn,
 .navbar .close-btn {
   background: none;
@@ -23,7 +27,10 @@ body {
   font-size: 20px;
   cursor: pointer;
   margin-left: 10px;
+  transition: transform var(--transition-fast);
 }
+.navbar .sidebar-btn:hover,
+.navbar .close-btn:hover { transform: scale(var(--btn-hover-scale)); }
 
 /* BUTTONS */
 .btn-green {
@@ -33,8 +40,13 @@ body {
   border-radius: 8px;
   text-decoration: none;
   display: inline-block;
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
 }
-.btn-green:hover { background-color: var(--green-dark); color:#fff; }
+.btn-green:hover { 
+  background-color: var(--green-dark); 
+  color:#fff; 
+  transform: scale(var(--btn-hover-scale));
+}
 
 /* SIDEBAR */
 .sidebar {
@@ -48,12 +60,12 @@ body {
   background: var(--green);
   color: white;
   padding-top: 10px;
-  transition: transform 0.25s ease;
+  transition: transform var(--transition-medium);
   z-index: 999;
   overflow-y: auto;
 }
 
-/* closed state */
+/* closed & show states */
 .sidebar.hidden { transform: translateX(-300px); }
 .sidebar.show { transform: translateX(0); }
 
@@ -70,18 +82,22 @@ body {
   padding: 12px 18px;
   text-decoration: none;
   font-size: 15px;
+  transition: transform var(--transition-fast), color var(--transition-fast);
 }
 .sidebar .sidebar-link.active {
   background: rgba(255,255,255,0.06);
   font-weight: 600;
 }
-.sidebar .sidebar-link:hover { color: #c1ffd7; transform: translateX(6px); }
+.sidebar .sidebar-link:hover { 
+  color: #c1ffd7; 
+  transform: translateX(6px); 
+}
 
 /* MAIN CONTENT */
 .content {
   margin-left: 260px;
   padding: 80px 24px 24px 24px;
-  transition: margin-left .25s ease;
+  transition: margin-left var(--transition-medium);
 }
 .content.expanded { margin-left: 20px; }
 
@@ -100,16 +116,25 @@ body {
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 6px 14px rgba(0,0,0,0.08);
-  transition: transform .18s ease, box-shadow .18s ease;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   overflow: hidden;
+  cursor: pointer;
 }
-.card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.12); }
-
+.card:hover { 
+  transform: scale(var(--card-hover-scale));
+  box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+}
 .card h3, .card h2 { margin: 8px 0; color: var(--text-dark); }
 .card p { margin: 6px 0; color: #333; }
 
 /* icon inside card */
-.card-icon { font-size: 34px; margin-bottom: 8px; display:inline-block; }
+.card-icon { 
+  font-size: 34px; 
+  margin-bottom: 8px; 
+  display:inline-block; 
+  transition: transform var(--transition-fast);
+}
+.card-icon:hover { transform: rotate(15deg); }
 
 /* images & video responsive inside card */
 .card-img, .card-video, .card video {
@@ -120,7 +145,9 @@ body {
   border-radius: 8px;
   display: block;
   margin-top: 10px;
+  transition: transform var(--transition-fast);
 }
+.card-img:hover, .card-video:hover { transform: scale(1.03); }
 
 /* small thumb (table-like cards) */
 .card-compact {
@@ -154,8 +181,21 @@ body {
 .table tbody tr:hover { background: rgba(11,125,54,0.03); }
 
 /* small utility */
-.page-title { color: var(--text-dark); margin-bottom: 10px; text-align:center; font-size: 1.4rem; }
-.btn { padding: 6px 10px; border-radius:6px; text-decoration:none; color:#fff; }
+.page-title { 
+  color: var(--text-dark); 
+  margin-bottom: 10px; 
+  text-align:center; 
+  font-size: 1.4rem; 
+}
+.btn { 
+  padding: 6px 10px; 
+  border-radius:6px; 
+  text-decoration:none; 
+  color:#fff; 
+  transition: transform var(--transition-fast);
+}
+.btn:hover { transform: scale(var(--btn-hover-scale)); }
+
 .btn-edit { background: var(--green); }
 .btn-delete { background: #c0392b; }
 
@@ -166,6 +206,12 @@ input[type="text"], input[type="url"], textarea, select {
   border-radius: 6px;
   border: 1px solid #ddd;
   box-sizing: border-box;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+input[type="text"]:focus, input[type="url"]:focus, textarea:focus, select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 6px rgba(11,125,54,0.25);
+  outline: none;
 }
 
 /* SMALL SCREEN ADJUST */

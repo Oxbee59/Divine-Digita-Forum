@@ -14,23 +14,28 @@
     {% if post.image %}
     <img src="{{ post.image.url }}" class="card-img" alt="{{ post.title }}">
     {% endif %}
+
     {% if post.video %}
     <video controls class="card-video">
         <source src="{{ post.video.url }}" type="video/mp4">
     </video>
     {% endif %}
+
     <p>{{ post.description }}</p>
-    {% if post.category %}
-    <p>📂 <strong>Category:</strong> {{ post.category.name }}</p>
-    {% endif %}
-    <p>👤 <strong>Author:</strong> {{ post.user.username }}</p>
-    <p>🕒 <strong>Posted on:</strong> {{ post.created_at|date:"F j, Y, g:i a" }}</p>
+
+    <div class="card-meta">
+        {% if post.category %}
+        <span class="meta-item">📂 {{ post.category.name }}</span>
+        {% endif %}
+        <span class="meta-item">👤 {{ post.user.username }}</span>
+        <span class="meta-item">🕒 {{ post.created_at|date:"M d, Y, g:i a" }}</span>
+    </div>
+
     {% if post.link %}
-    <p>🔗 <a href="{{ post.link }}" target="_blank">{{ post.link }}</a></p>
+    <p class="external-link">🔗 <a href="{{ post.link }}" target="_blank">{{ post.link|truncatechars:50 }}</a></p>
     {% endif %}
 </div>
 
-<a href="{% url 'customer_dashboard' %}" class="btn-view" style="margin-top:15px; display:inline-block;">⬅️ Go Back Home</a>
+<a href="{% url 'customer_dashboard' %}" class="btn btn-view" style="margin-top:15px;">⬅️ Back to Dashboard</a>
 
-{% include 'forum/cards_styles.html' %}
 {% endblock %}
