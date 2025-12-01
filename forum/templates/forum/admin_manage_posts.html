@@ -21,10 +21,7 @@
         <p><strong>Created:</strong> {{ post.created_at|date:"M d, Y" }}</p>
 
         <div class="card-actions">
-            <form method="post" action="{% url 'edit_post' post.id %}">
-                {% csrf_token %}
-                <button class="btn btn-edit">✏️ Edit</button>
-            </form>
+            <a href="{% url 'edit_post' post.id %}" class="btn btn-edit">✏️ Edit</a>
 
             <form method="post" action="{% url 'delete_post' post.id %}">
                 {% csrf_token %}
@@ -78,6 +75,9 @@
     color:white;
     cursor:pointer;
     width:100%;
+    text-align:center;
+    text-decoration:none;
+    display:inline-block;
 }
 
 .btn-edit {

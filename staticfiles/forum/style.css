@@ -53,15 +53,9 @@ body {
   overflow-y: auto;
 }
 
-/* closed state used by base.html toggleSidebar() */
-.sidebar.hidden {
-  transform: translateX(-300px);
-}
-
-/* For mobile show/hide using show class */
-.sidebar.show {
-  transform: translateX(0);
-}
+/* closed state */
+.sidebar.hidden { transform: translateX(-300px); }
+.sidebar.show { transform: translateX(0); }
 
 .sidebar h2 {
   text-align: center;
@@ -83,23 +77,19 @@ body {
 }
 .sidebar .sidebar-link:hover { color: #c1ffd7; transform: translateX(6px); }
 
-/* MAIN CONTENT (adjust for sidebar) */
+/* MAIN CONTENT */
 .content {
   margin-left: 260px;
-  padding: 80px 24px 24px 24px; /* top space for navbar */
+  padding: 80px 24px 24px 24px;
   transition: margin-left .25s ease;
 }
+.content.expanded { margin-left: 20px; }
 
-/* When sidebar is hidden (used by toggle), shrink margin */
-.content.expanded {
-  margin-left: 20px;
-}
-
-/* Responsive GRID for cards (admin/customer dashboards) */
+/* Responsive GRID for cards */
 .cards-container,
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 18px;
   margin-top: 20px;
 }
@@ -107,7 +97,7 @@ body {
 /* CARD */
 .card {
   background: var(--card-bg);
-  padding: 18px;
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 6px 14px rgba(0,0,0,0.08);
   transition: transform .18s ease, box-shadow .18s ease;
@@ -115,7 +105,7 @@ body {
 }
 .card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.12); }
 
-.card h3 { margin: 8px 0; color: var(--text-dark); }
+.card h3, .card h2 { margin: 8px 0; color: var(--text-dark); }
 .card p { margin: 6px 0; color: #333; }
 
 /* icon inside card */
@@ -145,7 +135,7 @@ body {
   border-radius:6px;
 }
 
-/* TABLE STYLES (admin lists) */
+/* TABLE STYLES */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -185,7 +175,7 @@ input[type="text"], input[type="url"], textarea, select {
   .sidebar.show { transform: translateX(0); }
   .content { margin-left: 0; padding: 80px 12px 12px 12px; }
   .card-img { max-height: 220px; }
-  .card { padding: 14px; }
+  .card { padding: 16px; }
 }
 
 /* extra helper to avoid giant uploads overflowing */

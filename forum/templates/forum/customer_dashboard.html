@@ -21,23 +21,20 @@
             <source src="{{ post.video.url }}" type="video/mp4">
         </video>
         {% endif %}
-
         <div class="card-icon">📝</div>
         <h3>{{ post.title }}</h3>
         <p>{{ post.description|truncatechars:100 }}</p>
-
         {% if post.category %}
         <p><strong>Category:</strong> {{ post.category.name }}</p>
         {% endif %}
         {% if post.link %}
         <p>🔗 <a href="{{ post.link }}" target="_blank">{{ post.link }}</a></p>
         {% endif %}
-
         <p><strong>Author:</strong> {{ post.user.username }}</p>
         <a href="{% url 'forum_detail' post.id %}" class="btn btn-green">View Details</a>
     </div>
     {% empty %}
-    <p>No posts yet.</p>
+    <p style="text-align:center;">No posts yet.</p>
     {% endfor %}
 </div>
 {% endblock %}

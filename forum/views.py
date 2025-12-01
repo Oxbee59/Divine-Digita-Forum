@@ -106,15 +106,30 @@ def post_add(request):
 @user_passes_test(lambda u: u.is_staff)
 def post_edit(request, pk):
     post = get_object_or_404(UploadItem, pk=pk)
+    
     if request.method == "POST":
         form = UploadItemForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             form.save()
             messages.success(request, "Post updated successfully.")
             return redirect("manage_posts")
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = UploadItemForm(instance=post)
-    return render(request, "forum/post_form.html", {"form": form, "title": "Edit Post"})
+
+    # Pass categories queryset separately if needed in template
+    categories = Category.objects.all()
+    
+    return render(
+        request, 
+        "forum/post_edit.html", 
+        {
+            "form": form,
+            "title": "Edit Post",
+            "categories": categories,
+        }
+    )
 
 @user_passes_test(lambda u: u.is_staff)
 def post_delete(request, pk):
