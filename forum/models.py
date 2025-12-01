@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 # ---- CATEGORY ----
 class Category(models.Model):
@@ -20,9 +21,9 @@ class UploadItem(models.Model):
     description = models.TextField(blank=True)
     link = models.URLField(blank=True, null=True)  # optional external link
 
-    # These fields will now be stored on Cloudinary automatically
-    image = models.ImageField(upload_to='uploads/images/', blank=True, null=True)
-    video = models.FileField(upload_to='uploads/videos/', blank=True, null=True)
+    # Cloudinary fields
+    image = CloudinaryField('image', blank=True, null=True)
+    video = CloudinaryField('video', resource_type='video', blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -51,3 +52,4 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.post.title}"
+ 

@@ -158,8 +158,8 @@ def admin_uploads(request):
         category_id = request.POST.get('category')
         category = Category.objects.get(id=category_id) if category_id else None
         link = request.POST.get('link')
-        image = request.FILES.get('image')
-        video = request.FILES.get('video')
+        image = request.FILES.get('image')  # CloudinaryField handles this automatically
+        video = request.FILES.get('video')  # CloudinaryField handles this automatically
 
         UploadItem.objects.create(
             user=request.user,
@@ -178,7 +178,6 @@ def admin_uploads(request):
         "categories": categories
     }
     return render(request, "forum/admin_uploads.html", context)
-
 # ----------------- CUSTOMER -----------------
 @login_required
 def customer_dashboard(request):
