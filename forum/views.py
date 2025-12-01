@@ -131,6 +131,7 @@ def admin_messages(request):
     return render(request, "forum/admin_messages.html", {"messages": messages_list})
 
 
+# ----------------- ADMIN -----------------
 @user_passes_test(lambda u: u.is_staff)
 def admin_uploads(request):
     categories = Category.objects.all()
@@ -157,13 +158,19 @@ def admin_uploads(request):
         messages.success(request, "Upload added successfully.")
         return redirect("admin_uploads")
 
-    return render(request, "forum/admin_uploads.html", {"uploads": uploads, "categories": categories})
+    context = {
+        "uploads": uploads,
+        "categories": categories
+    }
+    return render(request, "forum/admin_uploads.html", context)
 
 # ----------------- CUSTOMER -----------------
 @login_required
 def customer_dashboard(request):
+    # Only active uploads (optional filter)
     uploads = UploadItem.objects.select_related('user', 'category').all().order_by('-created_at')
-    return render(request, "forum/customer_dashboard.html", {"uploads": uploads})
+    context = {"uploads": uploads}
+    return render(request, "forum/customer_dashboard.html", context)  
 
 
 @login_required
@@ -188,10 +195,16 @@ def forum_index(request):
     return render(request, "forum/index.html", {"posts": posts})
 
 
+# ----------------- POST DETAILS -----------------
+@login_required
 def forum_detail(request, pk):
-    post = get_object_or_404(UploadItem, pk=pk)
+    post = get_object_or_404(UploadItem.objects.select_related('user', 'category'), pk=pk)
     comments = post.comments.select_related('user').all()
-    return render(request, "forum/detail.html", {"post": post, "comments": comments})
+    context = {
+        "post": post,
+        "comments": comments
+    }
+    return render(request, "forum/detail.html", context)
 
 @user_passes_test(lambda u: u.is_staff)
 def edit_user(request, pk):

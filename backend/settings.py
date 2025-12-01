@@ -114,12 +114,13 @@ STATICFILES_DIRS = [
 # WhiteNoise compressed manifest
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# ----------------------------------------------------
-# MEDIA FILES (uploads)
-# ----------------------------------------------------
-# Make sure you mount a Persistent Disk on Render and set SERVE_MEDIA=True (optional) so Django can serve media from MEDIA_ROOT
+# MEDIA FILES
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Development only: allow serving media
+SERVE_MEDIA = os.environ.get('SERVE_MEDIA', 'True') == 'True'
+
 
 # ----------------------------------------------------
 # MESSAGES

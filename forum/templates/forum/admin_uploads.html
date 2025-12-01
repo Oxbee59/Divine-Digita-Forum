@@ -13,7 +13,7 @@
 <h1 class="page-title">Uploads Management</h1>
 
 <!-- Add Upload Form -->
-<div class="card upload-form-card">
+<div class="upload-form-card">
     <h3>➕ Add New Upload</h3>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
@@ -54,7 +54,7 @@
         <p><strong>Category:</strong> {{ upload.category.name }}</p>
         {% endif %}
         {% if upload.video %}
-        <video width="100%" controls>
+        <video controls class="card-video">
             <source src="{{ upload.video.url }}" type="video/mp4">
         </video>
         {% endif %}
@@ -71,19 +71,5 @@
     {% endfor %}
 </div>
 
-<style>
-.upload-form-card { background:#f0fff4; padding:20px; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1); margin-bottom:20px;}
-.upload-form-card h3 { color:#0b7d36; margin-bottom:15px; }
-.upload-form-card input, .upload-form-card textarea, .upload-form-card select, .upload-form-card button {
-    width:100%; padding:8px 10px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc;
-}
-.upload-form-card button {
-    background:#0b7d36; color:white; border:none; cursor:pointer;
-}
-.upload-form-card button:hover { background:#0d8e3d; }
-.card-img { width:100%; border-radius:6px; margin-top:10px; }
-.cards-container { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
-.card { flex:1 1 300px; background:#f0fff4; padding:20px; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1); }
-.card h3 { color:#0b7d36; margin-bottom:10px; }
-</style>
+{% include 'forum/cards_styles.html' %}
 {% endblock %}

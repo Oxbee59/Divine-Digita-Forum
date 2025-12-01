@@ -14,12 +14,12 @@
     {% for post in uploads %}
     <div class="card">
         {% if post.image %}
-            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="card-img">
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="card-img">
         {% endif %}
         {% if post.video %}
-            <video width="100%" controls class="card-video">
-                <source src="{{ post.video.url }}" type="video/mp4">
-            </video>
+        <video controls class="card-video">
+            <source src="{{ post.video.url }}" type="video/mp4">
+        </video>
         {% endif %}
         <div class="card-icon">📝</div>
         <h3>{{ post.title }}</h3>
@@ -38,19 +38,5 @@
     {% endfor %}
 </div>
 
-<style>
-.cards-container { display:flex; flex-wrap:wrap; gap:20px; margin-top:20px; justify-content:center; }
-.card { flex:1 1 300px; background:#f0fff4; padding:20px; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1); transition:transform 0.3s; text-align:center; overflow:hidden;}
-.card:hover { transform:translateY(-5px) scale(1.02); box-shadow:0 12px 20px rgba(0,0,0,0.2); }
-.card-icon { font-size:36px; margin-bottom:10px; display:inline-block; transition:transform 0.3s; }
-.card:hover .card-icon { transform:rotate(10deg) scale(1.2); }
-.card-img { width:100%; max-height:200px; object-fit:cover; border-radius:6px; margin-bottom:10px; }
-.card-video { width:100%; max-height:250px; margin-bottom:10px; border-radius:6px; }
-h3 { margin:10px 0; color:#0b7d36; }
-p { font-size:0.95em; }
-.page-title { color:#0b7d36; margin-bottom:20px; text-align:center; }
-.btn-view { display:inline-block; margin-top:10px; padding:8px 15px; background:#0b7d36; color:white; border-radius:6px; text-decoration:none; }
-.btn-view:hover { opacity:0.9; }
-@media(max-width:768px){.cards-container{flex-direction:column}.card{flex:1 1 auto;}}
-</style>
+{% include 'forum/cards_styles.html' %}
 {% endblock %}
