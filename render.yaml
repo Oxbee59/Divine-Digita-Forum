@@ -1,12 +1,16 @@
 services:
   - type: web
-    name: divine-digital-forum
+    name: divine-digita-forum
     env: python
     region: oregon
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn forum_project.wsgi:application"
+    startCommand: "gunicorn backend.wsgi:application"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11
+        value: 3.13.7
       - key: DJANGO_SETTINGS_MODULE
-        value: forum_project.settings
+        value: backend.settings
+      - key: SECRET_KEY
+        value: your-secret-key-here
+      - key: DATABASE_URL
+        value: postgresql://forum_db_sdxl_user:tz3gKDwCxFp0JcK0FPiQ87AVP6YqIewJ@dpg-d4m5f9pr0fns739vgt0g-a.oregon-postgres.render.com/forum_db_sdxl

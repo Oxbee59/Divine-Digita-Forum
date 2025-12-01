@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ----------------------------------------------------
 SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key')  # fallback for local
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = ["*"]  # For Render, you can restrict later to your app URL
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',') if os.environ.get('ALLOWED_HOSTS') else ["*"]
 
 # ----------------------------------------------------
 # INSTALLED APPS
@@ -73,14 +73,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # ----------------------------------------------------
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get(
-            'DATABASE_URL',
-            f"postgresql://forum_db_sdxl_user:tz3gKDwCxFp0JcK0FPiQ87AVP6YqIewJ@dpg-d4m5f9pr0fns739vgt0g-a.oregon-postgres.render.com/forum_db_sdxl"
-        ),
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=os.environ.get('DATABASE_SSL', 'False') == 'True'
     )
 }
+
 
 # ----------------------------------------------------
 # PASSWORD VALIDATION
@@ -96,7 +94,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # INTERNATIONALIZATION
 # ----------------------------------------------------
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.environ.get('TIME_ZONE', 'UTC')
 USE_I18N = True
 USE_TZ = True
 
@@ -104,13 +102,22 @@ USE_TZ = True
 # STATIC FILES
 # ----------------------------------------------------
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # required by Render
-STATICFILES_DIRS = [BASE_DIR / 'forum' / 'static']
+
+# Required by Render
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Development static folder inside app
+STATICFILES_DIRS = [
+    BASE_DIR / 'forum' / 'static'
+]
+
+# WhiteNoise compressed manifest
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ----------------------------------------------------
-# MEDIA FILES
+# MEDIA FILES (uploads)
 # ----------------------------------------------------
+# Make sure you mount a Persistent Disk on Render and set SERVE_MEDIA=True (optional) so Django can serve media from MEDIA_ROOT
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -129,5 +136,8 @@ MESSAGE_TAGS = {
 # AUTH
 # ----------------------------------------------------
 LOGIN_URL = '/login/'
+
+# Trust proxy headers (when behind Render's load balancer)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

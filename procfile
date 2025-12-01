@@ -1,1 +1,1 @@
-web: gunicorn forum_project.wsgi:application
+web: gunicorn backend.wsgi:application
