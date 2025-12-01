@@ -1,6 +1,6 @@
 """
 Django settings for backend project.
-Configured for Render deployment with external PostgreSQL database.
+Configured for Render deployment with external PostgreSQL database and Cloudinary for media.
 """
 
 import os
@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'forum',  # your app
+    "cloudinary",
+    "cloudinary_storage",
 ]
 
 # ----------------------------------------------------
@@ -79,7 +81,6 @@ DATABASES = {
     )
 }
 
-
 # ----------------------------------------------------
 # PASSWORD VALIDATION
 # ----------------------------------------------------
@@ -102,25 +103,26 @@ USE_TZ = True
 # STATIC FILES
 # ----------------------------------------------------
 STATIC_URL = '/static/'
-
-# Required by Render
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Development static folder inside app
 STATICFILES_DIRS = [
     BASE_DIR / 'forum' / 'static'
 ]
-
-# WhiteNoise compressed manifest
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# MEDIA FILES
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# ----------------------------------------------------
+# CLOUDINARY MEDIA FILES
+# ----------------------------------------------------
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-# Development only: allow serving media
-SERVE_MEDIA = os.environ.get('SERVE_MEDIA', 'True') == 'True'
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", "your_cloud_name"),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY", "your_api_key"),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", "your_api_secret"),
+}
 
+# Remove local media settings (optional)
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
 
 # ----------------------------------------------------
 # MESSAGES
@@ -137,8 +139,6 @@ MESSAGE_TAGS = {
 # AUTH
 # ----------------------------------------------------
 LOGIN_URL = '/login/'
-
-# Trust proxy headers (when behind Render's load balancer)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

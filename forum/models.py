@@ -19,6 +19,8 @@ class UploadItem(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     link = models.URLField(blank=True, null=True)  # optional external link
+
+    # These fields will now be stored on Cloudinary automatically
     image = models.ImageField(upload_to='uploads/images/', blank=True, null=True)
     video = models.FileField(upload_to='uploads/videos/', blank=True, null=True)
 
