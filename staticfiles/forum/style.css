@@ -1,45 +1,195 @@
 /* THEME COLORS */
-.bg-green {
-    background-color: #0ba360;
+:root{
+  --green: #0ba360;
+  --green-dark: #08874d;
+  --bg: #f4fdf4;
+  --card-bg: #f0fff4;
+  --text-dark: #0b7d36;
 }
 
+body {
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: #222;
+}
+
+/* NAVBAR small helpers (for base.html icons) */
+.navbar .sidebar-btn,
+.navbar .close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+/* BUTTONS */
 .btn-green {
-    background-color: #0ba360;
-    color: white;
+  background-color: var(--green);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-block;
 }
-
-.btn-green:hover {
-    background-color: #08874d;
-    color: #fff;
-}
+.btn-green:hover { background-color: var(--green-dark); color:#fff; }
 
 /* SIDEBAR */
 .sidebar {
-    min-width: 250px;
-    max-width: 250px;
-    height: 100vh;
-    position: fixed;
+  width: 240px;
+  min-width: 200px;
+  max-width: 280px;
+  height: calc(100vh - 60px);
+  position: fixed;
+  top: 60px;
+  left: 0;
+  background: var(--green);
+  color: white;
+  padding-top: 10px;
+  transition: transform 0.25s ease;
+  z-index: 999;
+  overflow-y: auto;
 }
 
-.sidebar .sidebar-link {
-    color: white;
-    display: block;
-    padding: 10px 0;
+/* closed state used by base.html toggleSidebar() */
+.sidebar.hidden {
+  transform: translateX(-300px);
 }
 
-.sidebar .sidebar-link:hover {
-    color: #c1ffd7;
+/* For mobile show/hide using show class */
+.sidebar.show {
+  transform: translateX(0);
 }
 
+.sidebar h2 {
+  text-align: center;
+  margin: 0 0 18px 0;
+  padding: 8px 10px;
+  font-weight: 700;
+}
+
+.sidebar .sidebar-link{
+  color: white;
+  display: block;
+  padding: 12px 18px;
+  text-decoration: none;
+  font-size: 15px;
+}
+.sidebar .sidebar-link.active {
+  background: rgba(255,255,255,0.06);
+  font-weight: 600;
+}
+.sidebar .sidebar-link:hover { color: #c1ffd7; transform: translateX(6px); }
+
+/* MAIN CONTENT (adjust for sidebar) */
 .content {
-    margin-left: 260px;
+  margin-left: 260px;
+  padding: 80px 24px 24px 24px; /* top space for navbar */
+  transition: margin-left .25s ease;
 }
 
-@media(max-width: 768px){
-    .sidebar {
-        display: none;
-    }
-    .content {
-        margin-left: 0;
-    }
+/* When sidebar is hidden (used by toggle), shrink margin */
+.content.expanded {
+  margin-left: 20px;
+}
+
+/* Responsive GRID for cards (admin/customer dashboards) */
+.cards-container,
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+/* CARD */
+.card {
+  background: var(--card-bg);
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+  transition: transform .18s ease, box-shadow .18s ease;
+  overflow: hidden;
+}
+.card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.12); }
+
+.card h3 { margin: 8px 0; color: var(--text-dark); }
+.card p { margin: 6px 0; color: #333; }
+
+/* icon inside card */
+.card-icon { font-size: 34px; margin-bottom: 8px; display:inline-block; }
+
+/* images & video responsive inside card */
+.card-img, .card-video, .card video {
+  width: 100%;
+  height: auto;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  margin-top: 10px;
+}
+
+/* small thumb (table-like cards) */
+.card-compact {
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.card-compact .thumb {
+  width: 84px;
+  height: 64px;
+  object-fit:cover;
+  border-radius:6px;
+}
+
+/* TABLE STYLES (admin lists) */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.table th, .table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  vertical-align: middle;
+}
+.table thead th { background: var(--text-dark); color: white; font-weight:700; }
+.table tbody tr:hover { background: rgba(11,125,54,0.03); }
+
+/* small utility */
+.page-title { color: var(--text-dark); margin-bottom: 10px; text-align:center; font-size: 1.4rem; }
+.btn { padding: 6px 10px; border-radius:6px; text-decoration:none; color:#fff; }
+.btn-edit { background: var(--green); }
+.btn-delete { background: #c0392b; }
+
+/* FORMS */
+input[type="text"], input[type="url"], textarea, select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+/* SMALL SCREEN ADJUST */
+@media (max-width: 768px) {
+  .sidebar { position: fixed; left: -320px; top: 60px; }
+  .sidebar.hidden { transform: translateX(-320px); }
+  .sidebar.show { transform: translateX(0); }
+  .content { margin-left: 0; padding: 80px 12px 12px 12px; }
+  .card-img { max-height: 220px; }
+  .card { padding: 14px; }
+}
+
+/* extra helper to avoid giant uploads overflowing */
+.long-text {
+  word-break: break-word;
+  white-space: normal;
 }
