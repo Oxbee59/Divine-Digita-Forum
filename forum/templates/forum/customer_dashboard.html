@@ -15,13 +15,13 @@
     <div class="card">
 
         {% if post.image %}
-        <img src="{{ post.image.url|add:'?f_auto,q_auto,w_900,h_500,c_fill' }}" 
+        <img src="{{ post.image.url|replace:'upload/','upload/w_900,h_500,c_fill,f_auto,q_auto/' }}"
              alt="{{ post.title }}" class="card-img">
         {% endif %}
 
         {% if post.video %}
         <video controls class="card-video">
-            <source src="{{ post.video.url|add:'?f_auto,q_auto,w_900,h_500,c_fill' }}" type="video/mp4">
+            <source src="{{ post.video.url|replace:'upload/','upload/w_900,h_500,c_fill,f_auto,q_auto/' }}" type="video/mp4">
         </video>
         {% endif %}
 
@@ -42,7 +42,6 @@
         <p class="external-link">🔗 <a href="{{ post.link }}" target="_blank">{{ post.link|truncatechars:30 }}</a></p>
         {% endif %}
 
-        <!-- Custom detail button -->
         <a href="{% url 'forum_detail' post.id %}" class="btn btn-green"
            style="margin-top:10px; display:block; text-align:center;">🔍 View Details</a>
 
