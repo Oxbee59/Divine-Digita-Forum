@@ -1,4 +1,5 @@
 {% extends "forum/base.html" %}
+{% load cloudinary_filters %}
 
 {% block sidebar_links %}
 <a href="{% url 'customer_dashboard' %}" class="sidebar-link">🏠 Dashboard</a>
@@ -12,12 +13,12 @@
 
 <div class="card">
     {% if post.image %}
-    <img src="{{ post.image.url|replace:'upload/','upload/w_900,h_500,c_fill,f_auto,q_auto/' }}" class="card-img">
+    <img src="{{ post.image.url|cloudinary_resize }}" class="card-img" alt="{{ post.title }}">
     {% endif %}
 
     {% if post.video %}
     <video controls class="card-video">
-        <source src="{{ post.video.url|replace:'upload/','upload/w_900,h_500,c_fill,f_auto,q_auto/' }}" type="video/mp4">
+        <source src="{{ post.video.url|cloudinary_resize }}" type="video/mp4">
     </video>
     {% endif %}
 
@@ -38,5 +39,4 @@
 
 <a href="{% url 'customer_dashboard' %}" class="btn btn-green"
    style="margin-top:15px; display:inline-block;">⬅️ Back to Dashboard</a>
-
 {% endblock %}

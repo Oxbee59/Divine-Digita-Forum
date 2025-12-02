@@ -106,6 +106,20 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
+        /* IMAGE & VIDEO */
+        .card-img, .card-video, .card video {
+            width: 100%;
+            height: auto;
+            max-height: 320px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            margin-top: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .card-img:hover, .card-video:hover { transform: scale(1.03); }
+
         /* FOOTER */
         footer {
             margin-top: 40px;
@@ -133,26 +147,26 @@
                 margin-left: 20px !important;
                 padding: 80px 15px 15px 15px;
             }
+            .card-img, .card-video { max-height: 220px; }
         }
     </style>
 
     <script>
-function toggleSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    const content = document.getElementById("content");
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const content = document.getElementById("content");
 
-    if (sidebar.classList.contains("show")) {
-        sidebar.classList.remove("show");
-        sidebar.classList.add("hidden");
-    } else {
-        sidebar.classList.add("show");
-        sidebar.classList.remove("hidden");
-    }
+            if (sidebar.classList.contains("show")) {
+                sidebar.classList.remove("show");
+                sidebar.classList.add("hidden");
+            } else {
+                sidebar.classList.add("show");
+                sidebar.classList.remove("hidden");
+            }
 
-    content.classList.toggle("expanded");
-}
-</script>
-
+            content.classList.toggle("expanded");
+        }
+    </script>
 
 </head>
 

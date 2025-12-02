@@ -1,4 +1,5 @@
 {% extends "forum/base.html" %}
+{% load cloudinary_filters %}
 
 {% block sidebar_links %}
 <a href="{% url 'admin_dashboard' %}" class="sidebar-link">🏠 Dashboard</a>
@@ -12,16 +13,15 @@
 {% block content %}
 <h1 class="page-title">Uploads Management</h1>
 
+<!-- Upload Form -->
 <div class="card">
     <h3>➕ Add New Upload</h3>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <label>Title</label>
         <input type="text" name="title" required>
-
         <label>Description</label>
         <textarea name="description" rows="3" required></textarea>
-
         <label>Category</label>
         <select name="category">
             <option value="">--Select Category--</option>
@@ -29,20 +29,17 @@
             <option value="{{ cat.id }}">{{ cat.name }}</option>
             {% endfor %}
         </select>
-
         <label>Video (optional)</label>
         <input type="file" name="video" accept="video/*">
-
         <label>Image (optional)</label>
         <input type="file" name="image" accept="image/*">
-
         <label>External Link (optional)</label>
-        <input type="url" name="link">
-
+        <input type="url" name="link" placeholder="https://example.com">
         <button type="submit" class="btn btn-green" style="margin-top:10px;">Upload</button>
     </form>
 </div>
 
+<!-- Uploaded Items -->
 <div class="cards-container" style="margin-top:20px;">
     {% for upload in uploads %}
     <div class="card">
@@ -55,12 +52,12 @@
 
         {% if upload.video %}
         <video controls class="card-video">
-            <source src="{{ upload.video.url|replace:'upload/','upload/w_900,h_500,c_fill,f_auto,q_auto/' }}" type="video/mp4">
+            <source src="{{ upload.video.url|cloudinary_resize }}">
         </video>
         {% endif %}
 
         {% if upload.image %}
-        <img src="{{ upload.image.url|replace:'upload/','upload/w_900,h_500,c_fill,f_auto,q_auto/' }}" class="card-img">
+        <img src="{{ upload.image.url|cloudinary_resize }}" alt="{{ upload.title }}" class="card-img">
         {% endif %}
 
         {% if upload.link %}
@@ -73,5 +70,4 @@
     <p style="text-align:center;">No uploads yet.</p>
     {% endfor %}
 </div>
-
 {% endblock %}
