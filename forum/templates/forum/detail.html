@@ -12,12 +12,12 @@
 
 <div class="card">
     {% if post.image %}
-    <img src="{{ post.image.url }}" class="card-img" alt="{{ post.title }}">
+    <img src="{{ post.image.url|add:'?f_auto,q_auto,w_900,h_500,c_fill' }}" class="card-img" alt="{{ post.title }}">
     {% endif %}
 
     {% if post.video %}
     <video controls class="card-video">
-        <source src="{{ post.video.url }}" type="video/mp4">
+        <source src="{{ post.video.url|add:'?f_auto,q_auto,w_900,h_500,c_fill' }}" type="video/mp4">
     </video>
     {% endif %}
 
@@ -36,6 +36,7 @@
     {% endif %}
 </div>
 
-<a href="{% url 'customer_dashboard' %}" class="btn btn-view" style="margin-top:15px;">⬅️ Back to Dashboard</a>
+<a href="{% url 'customer_dashboard' %}" class="btn btn-green"
+   style="margin-top:15px; display:inline-block;">⬅️ Back to Dashboard</a>
 
 {% endblock %}

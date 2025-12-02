@@ -12,7 +12,7 @@
 {% block content %}
 <h1 class="page-title">Uploads Management</h1>
 
-<!-- Add Upload Form -->
+<!-- Upload Form -->
 <div class="card">
     <h3>➕ Add New Upload</h3>
     <form method="POST" enctype="multipart/form-data">
@@ -50,24 +50,30 @@
     <div class="card">
         <h3>📌 {{ upload.title }}</h3>
         <p>{{ upload.description }}</p>
+
         {% if upload.category %}
         <p><strong>Category:</strong> {{ upload.category.name }}</p>
         {% endif %}
+
         {% if upload.video %}
         <video controls class="card-video">
-            <source src="{{ upload.video.url }}" type="video/mp4">
+            <source src="{{ upload.video.url|add:'?f_auto,q_auto,w_900,h_500,c_fill' }}" type="video/mp4">
         </video>
         {% endif %}
+
         {% if upload.image %}
-        <img src="{{ upload.image.url }}" alt="{{ upload.title }}" class="card-img">
+        <img src="{{ upload.image.url|add:'?f_auto,q_auto,w_900,h_500,c_fill' }}" alt="{{ upload.title }}" class="card-img">
         {% endif %}
+
         {% if upload.link %}
         <p>🔗 <a href="{{ upload.link }}" target="_blank">{{ upload.link }}</a></p>
         {% endif %}
+
         <p><strong>Uploaded by:</strong> {{ upload.user.username }}</p>
     </div>
     {% empty %}
     <p style="text-align:center;">No uploads yet.</p>
     {% endfor %}
 </div>
+
 {% endblock %}

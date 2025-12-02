@@ -136,20 +136,24 @@ body {
 }
 .card-icon:hover { transform: rotate(15deg); }
 
-/* images & video responsive inside card */
-.card-img, .card-video, .card video {
+/* CLOUDINARY MEDIA FIX (Images & Videos inside Cards) */
+.card-img,
+.card-video,
+.card video {
   width: 100%;
-  height: auto;
-  max-height: 320px;
-  object-fit: cover;
+  height: 220px;   /* Prevent giant images */
+  object-fit: cover;   /* Crop without distortion */
   border-radius: 8px;
   display: block;
   margin-top: 10px;
   transition: transform var(--transition-fast);
 }
-.card-img:hover, .card-video:hover { transform: scale(1.03); }
 
-/* small thumb (table-like cards) */
+.card-img:hover, .card-video:hover { 
+  transform: scale(1.03); 
+}
+
+/* compact card thumbnail */
 .card-compact {
   display:flex;
   gap:12px;
@@ -219,8 +223,15 @@ input[type="text"]:focus, input[type="url"]:focus, textarea:focus, select:focus 
   .sidebar { position: fixed; left: -320px; top: 60px; }
   .sidebar.hidden { transform: translateX(-320px); }
   .sidebar.show { transform: translateX(0); }
+
   .content { margin-left: 0; padding: 80px 12px 12px 12px; }
-  .card-img { max-height: 220px; }
+
+  .card-img,
+  .card-video,
+  .card video {
+    height: 180px; /* smaller for mobile */
+  }
+
   .card { padding: 16px; }
 }
 

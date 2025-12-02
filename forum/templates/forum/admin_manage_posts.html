@@ -14,6 +14,17 @@
 <div class="cards-container">
     {% for post in uploads %}
     <div class="card">
+
+        {% if post.image %}
+        <img src="{{ post.image.url|add:'?f_auto,q_auto,w_900,h_500,c_fill' }}" class="card-img">
+        {% endif %}
+
+        {% if post.video %}
+        <video controls class="card-video">
+            <source src="{{ post.video.url|add:'?f_auto,q_auto,w_900,h_500,c_fill' }}">
+        </video>
+        {% endif %}
+
         <h2 class="card-title">{{ post.title }}</h2>
 
         <p><strong>Category:</strong> {{ post.category.name }}</p>
@@ -22,70 +33,16 @@
 
         <div class="card-actions">
             <a href="{% url 'edit_post' post.id %}" class="btn btn-edit">✏️ Edit</a>
-
             <form method="post" action="{% url 'delete_post' post.id %}">
                 {% csrf_token %}
                 <button class="btn btn-delete">🗑️ Delete</button>
             </form>
         </div>
+
     </div>
     {% empty %}
     <p style="text-align:center;">No posts found.</p>
     {% endfor %}
 </div>
 
-<style>
-.page-title {
-    text-align:center;
-    color:#0b7d36;
-    margin-bottom:20px;
-}
-
-.cards-container {
-    display:flex;
-    flex-wrap:wrap;
-    gap:20px;
-    justify-content:center;
-}
-
-.card {
-    width:300px;
-    background:white;
-    padding:15px;
-    border-radius:10px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.15);
-    border-left:6px solid #0b7d36;
-}
-
-.card-title {
-    margin:0 0 10px;
-    color:#0b7d36;
-}
-
-.card-actions {
-    margin-top:15px;
-    display:flex;
-    gap:10px;
-}
-
-.btn {
-    padding:8px 12px;
-    border:none;
-    border-radius:6px;
-    color:white;
-    cursor:pointer;
-    width:100%;
-    text-align:center;
-    text-decoration:none;
-    display:inline-block;
-}
-
-.btn-edit {
-    background:#0b7d36;
-}
-
-.btn-delete {
-    background:#c0392b;
-}
-</style>
 {% endblock %}

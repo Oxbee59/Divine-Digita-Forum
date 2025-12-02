@@ -13,13 +13,15 @@
 <div class="cards-container">
     {% for post in uploads %}
     <div class="card">
+
         {% if post.image %}
-        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="card-img">
+        <img src="{{ post.image.url|add:'?f_auto,q_auto,w_900,h_500,c_fill' }}" 
+             alt="{{ post.title }}" class="card-img">
         {% endif %}
 
         {% if post.video %}
         <video controls class="card-video">
-            <source src="{{ post.video.url }}" type="video/mp4">
+            <source src="{{ post.video.url|add:'?f_auto,q_auto,w_900,h_500,c_fill' }}" type="video/mp4">
         </video>
         {% endif %}
 
@@ -40,7 +42,10 @@
         <p class="external-link">🔗 <a href="{{ post.link }}" target="_blank">{{ post.link|truncatechars:30 }}</a></p>
         {% endif %}
 
-        <a href="{% url 'forum_detail' post.id %}" class="btn btn-view">View Details ➡️</a>
+        <!-- Custom detail button -->
+        <a href="{% url 'forum_detail' post.id %}" class="btn btn-green"
+           style="margin-top:10px; display:block; text-align:center;">🔍 View Details</a>
+
     </div>
     {% empty %}
     <p style="text-align:center;">No posts yet. 📭</p>
