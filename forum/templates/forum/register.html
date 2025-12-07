@@ -52,21 +52,26 @@
   <form method="post" novalidate>
     {% csrf_token %}
 
+    <!-- Username -->
     <label>Username</label>
-    <input type="text" name="username" required class="input" autocomplete="username">
+    <input type="text" name="username" required class="input" value="{{ form.username.value|default_if_none:'' }}">
 
+    <!-- Email -->
     <label>Email</label>
-    <input type="email" name="email" required class="input" autocomplete="email">
+    <input type="email" name="email" required class="input" value="{{ form.email.value|default_if_none:'' }}">
 
+    <!-- Phone -->
     <label>Phone Number</label>
-    <input type="text" name="phone" required class="input" autocomplete="tel">
+    <input type="text" name="phone" required class="input" value="{{ form.phone.value|default_if_none:'' }}">
 
+    <!-- Password -->
     <label>Password</label>
     <div class="input-wrap" style="margin-bottom:12px;">
-      <input id="reg-password1" type="password" name="password" required class="input" style="padding-right:70px;">
+      <input id="reg-password1" type="password" name="password1" required class="input" style="padding-right:70px;">
       <button type="button" class="pw-toggle" data-target="reg-password1">View</button>
     </div>
 
+    <!-- Confirm Password -->
     <label>Confirm Password</label>
     <div class="input-wrap" style="margin-bottom:14px;">
       <input id="reg-password2" type="password" name="password2" required class="input" style="padding-right:70px;">

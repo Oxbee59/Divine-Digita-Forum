@@ -12,8 +12,8 @@ from .forms import SignupForm, UploadItemForm, CategoryForm, MessageForm, Commen
 def signup(request):
     if request.method == "POST":
         form = SignupForm(request.POST)
-
         if form.is_valid():
+            # Extract cleaned data
             username = form.cleaned_data["username"]
             email = form.cleaned_data["email"]
             phone = form.cleaned_data["phone"]
@@ -25,41 +25,36 @@ def signup(request):
                 email=email,
                 password=password
             )
-
-            # Store phone in last_name field
+            # Store phone in last_name
             user.last_name = phone
             user.save()
 
             messages.success(request, "Account created successfully! You can now log in.")
             return redirect("login")
-
         else:
             messages.error(request, "Please correct the errors below.")
-
     else:
         form = SignupForm()
 
     return render(request, "forum/register.html", {"form": form})
 
 
-
 def login_view(request):
     if request.method == "GET":
         return render(request, "forum/login.html")
 
-    identifier = request.POST.get("identifier", "").strip()
+    identifier = request.POST.get("identifier", "").strip()  # username or phone
     password = request.POST.get("password", "").strip()
-
     user = None
 
-    # Try username
+    # Try to authenticate via username
     try:
         u = User.objects.get(username=identifier)
         user = authenticate(request, username=u.username, password=password)
     except User.DoesNotExist:
         pass
 
-    # Try phone number (stored in last_name)
+    # If username failed, try phone number (stored in last_name)
     if user is None:
         try:
             u = User.objects.get(last_name=identifier)
@@ -75,7 +70,6 @@ def login_view(request):
 
     messages.error(request, "Invalid login credentials.")
     return redirect("login")
-
 
 def logout_view(request):
     logout(request)

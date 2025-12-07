@@ -3,62 +3,33 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import UploadItem, Category, Message, Comment
 
-
-# -------------------------------------------
-# USER SIGNUP FORM (username + email + phone)
-# -------------------------------------------
-
+# -----------------------------
+# SIGNUP FORM
+# -----------------------------
 class SignupForm(UserCreationForm):
-    email = forms.EmailField(
-        required=True,
-        widget=forms.EmailInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Enter email'
-        })
-    )
-
-    phone = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Enter phone number'
-        })
-    )
-
-    username = forms.CharField(
-        max_length=150,
-        required=True,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Choose username'
-        })
-    )
-
-    password1 = forms.CharField(
-        label="Password",
-        widget=forms.PasswordInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Enter password'
-        })
-    )
-
-    password2 = forms.CharField(
-        label="Confirm Password",
-        widget=forms.PasswordInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Confirm password'
-        })
-    )
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={
+        'class': 'form-control', 'placeholder': 'Enter email'
+    }))
+    phone = forms.CharField(required=True, widget=forms.TextInput(attrs={
+        'class': 'form-control', 'placeholder': 'Enter phone number'
+    }))
+    username = forms.CharField(max_length=150, required=True, widget=forms.TextInput(attrs={
+        'class': 'form-control', 'placeholder': 'Choose username'
+    }))
+    password1 = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 'placeholder': 'Enter password'
+    }))
+    password2 = forms.CharField(label="Confirm Password", widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 'placeholder': 'Confirm password'
+    }))
 
     class Meta:
         model = User
         fields = ["username", "email", "phone", "password1", "password2"]
 
-
-# -------------------------------------------
-# UPLOAD ITEM FORM (admin uploads)
-# -------------------------------------------
-
+# -----------------------------
+# UPLOAD ITEM FORM
+# -----------------------------
 class UploadItemForm(forms.ModelForm):
     class Meta:
         model = UploadItem
@@ -72,11 +43,9 @@ class UploadItemForm(forms.ModelForm):
             "link": forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Optional URL'}),
         }
 
-
-# -------------------------------------------
-# CATEGORY FORM (admin)
-# -------------------------------------------
-
+# -----------------------------
+# CATEGORY FORM
+# -----------------------------
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
@@ -86,11 +55,9 @@ class CategoryForm(forms.ModelForm):
             "description": forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Describe category...', 'rows': 3}),
         }
 
-
-# -------------------------------------------
-# CONTACT MESSAGE FORM (customer → admin)
-# -------------------------------------------
-
+# -----------------------------
+# CONTACT MESSAGE FORM
+# -----------------------------
 class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
@@ -100,11 +67,9 @@ class MessageForm(forms.ModelForm):
             "message": forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Write your message...'}),
         }
 
-
-# -------------------------------------------
-# COMMENT FORM (post comments)
-# -------------------------------------------
-
+# -----------------------------
+# COMMENT FORM
+# -----------------------------
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
