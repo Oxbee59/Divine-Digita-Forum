@@ -1,11 +1,14 @@
 from django.urls import path
 from . import views
+from .views import create_admin_temp
+
 
 urlpatterns = [
     # -------------------- AUTH --------------------
     path('signup/', views.signup, name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path("create-admin/", create_admin_temp),
 
     # -------------------- CUSTOMER --------------------
     path('profile/', views.profile, name='profile'),

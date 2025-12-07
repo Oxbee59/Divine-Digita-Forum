@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .models import UploadItem, Category, Message, Comment
 from .forms import SignupForm, UploadItemForm, CategoryForm, MessageForm, CommentForm
+from django.http import HttpResponse
 
 
 ## ----------------- AUTH -----------------
@@ -272,3 +273,15 @@ def delete_message(request, pk):
         messages.success(request, "Message deleted successfully.")
         return redirect("admin_messages")
     return redirect("admin_messages")
+
+def create_admin_temp(request):
+    if User.objects.filter(username="admin").exists():
+        return HttpResponse("Admin already created.")
+
+    User.objects.create_superuser(
+        username="DIVINE",
+        email="divine@gmail.com",
+        password="divine@5050"
+    )
+
+    return HttpResponse("Superuser created successfully!")
