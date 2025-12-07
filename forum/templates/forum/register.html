@@ -3,7 +3,6 @@
 
 {% block content %}
 <style>
-/* reuse same minimal styles */
 .form-card {
   max-width:480px;
   margin:40px auto;
@@ -59,9 +58,11 @@
     <label>Email</label>
     <input type="email" name="email" required class="input" autocomplete="email">
 
+    <label>Phone Number</label>
+    <input type="text" name="phone" required class="input" autocomplete="tel">
+
     <label>Password</label>
     <div class="input-wrap" style="margin-bottom:12px;">
-      <!-- FIXED: name="password" -->
       <input id="reg-password1" type="password" name="password" required class="input" style="padding-right:70px;">
       <button type="button" class="pw-toggle" data-target="reg-password1">View</button>
     </div>

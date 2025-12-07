@@ -17,6 +17,7 @@
             <th>ID</th>
             <th>Username</th>
             <th>Email</th>
+            <th>Phone</th>
             <th>Staff</th>
             <th>Actions</th>
         </tr>
@@ -27,17 +28,22 @@
             <td>{{ user.id }}</td>
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
+            <td>{{ user.last_name }}</td> <!-- PHONE DISPLAYED HERE -->
             <td>{% if user.is_staff %}✅{% else %}❌{% endif %}</td>
+
             <td>
                 <!-- Inline Edit Form -->
                 <form method="POST" action="{% url 'edit_user' user.id %}" style="display:inline-block;">
                     {% csrf_token %}
                     <input type="text" name="username" value="{{ user.username }}" required>
                     <input type="email" name="email" value="{{ user.email }}" required>
+                    <input type="number" name="phone" value="{{ user.last_name }}" required placeholder="Phone">
+
                     <label>
                         <input type="checkbox" name="is_staff" {% if user.is_staff %}checked{% endif %}>
                         Staff
                     </label>
+
                     <button type="submit" class="btn btn-edit">✏️ Update</button>
                 </form>
 
@@ -49,7 +55,7 @@
             </td>
         </tr>
         {% empty %}
-        <tr><td colspan="5" style="text-align:center;">No users found.</td></tr>
+        <tr><td colspan="6" style="text-align:center;">No users found.</td></tr>
         {% endfor %}
     </tbody>
 </table>
@@ -61,6 +67,7 @@
 .btn-edit { padding:5px 8px; border-radius:6px; color:white; background:#0b7d36; border:none; cursor:pointer; margin-right:5px; }
 .btn-delete { padding:5px 8px; border-radius:6px; color:white; background:#c0392b; border:none; cursor:pointer; }
 .btn-edit:hover, .btn-delete:hover { opacity:0.9; }
-input[type="text"], input[type="email"] { padding:4px 6px; border-radius:4px; border:1px solid #ccc; margin-right:4px; }
+input[type="text"], input[type="email"], input[type="number"] { padding:4px 6px; border-radius:4px; border:1px solid #ccc; margin-right:4px; width:130px; }
 </style>
+
 {% endblock %}

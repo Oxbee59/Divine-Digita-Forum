@@ -68,12 +68,11 @@
 
   <form method="post" novalidate>
     {% csrf_token %}
-    
-    <!-- Hidden next input -->
+
     <input type="hidden" name="next" value="{{ next }}">
 
-    <label>Username</label>
-    <input type="text" name="username" required class="input" autocomplete="username">
+    <label>Username or Phone Number</label>
+    <input type="text" name="identifier" required class="input" autocomplete="username">
 
     <label style="display:block; margin-bottom:6px;">Password</label>
     <div class="input-wrap" style="margin-bottom:16px;">
@@ -92,7 +91,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  // attach toggle listeners safely (only if element exists)
   const toggles = document.querySelectorAll('.pw-toggle');
   toggles.forEach(function(btn){
     btn.addEventListener('click', function(){

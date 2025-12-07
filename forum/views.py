@@ -7,50 +7,72 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import UploadItem, Category, Message, Comment
 from .forms import SignupForm, UploadItemForm, CategoryForm, MessageForm, CommentForm
 
-# ----------------- AUTH -----------------
+
+## ----------------- AUTH -----------------
 def signup(request):
-    if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
-        email = request.POST.get('email', '').strip()
-        password = request.POST.get('password', '').strip()
-        password2 = request.POST.get('password2', '').strip()
+    if request.method == "POST":
+        form = SignupForm(request.POST)
 
-        if not username or not email or not password or not password2:
-            messages.error(request, 'All fields are required.')
-            return render(request, 'forum/register.html')
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            email = form.cleaned_data["email"]
+            phone = form.cleaned_data["phone"]
+            password = form.cleaned_data["password1"]
 
-        if password != password2:
-            messages.error(request, 'Passwords do not match.')
-            return render(request, 'forum/register.html')
+            # Create user
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password
+            )
 
-        if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username already exists.')
-            return render(request, 'forum/register.html')
+            # Store phone in last_name field
+            user.last_name = phone
+            user.save()
 
-        if User.objects.filter(email=email).exists():
-            messages.error(request, 'Email already in use.')
-            return render(request, 'forum/register.html')
+            messages.success(request, "Account created successfully! You can now log in.")
+            return redirect("login")
 
-        user = User.objects.create_user(username=username, email=email, password=password)
-        messages.success(request, 'Account created successfully! You can now log in.')
-        return redirect('login')
+        else:
+            messages.error(request, "Please correct the errors below.")
 
-    return render(request, 'forum/register.html')
+    else:
+        form = SignupForm()
+
+    return render(request, "forum/register.html", {"form": form})
+
 
 
 def login_view(request):
     if request.method == "GET":
         return render(request, "forum/login.html")
 
-    username = request.POST.get("username")
-    password = request.POST.get("password")
+    identifier = request.POST.get("identifier", "").strip()
+    password = request.POST.get("password", "").strip()
 
-    user = authenticate(request, username=username, password=password)
+    user = None
+
+    # Try username
+    try:
+        u = User.objects.get(username=identifier)
+        user = authenticate(request, username=u.username, password=password)
+    except User.DoesNotExist:
+        pass
+
+    # Try phone number (stored in last_name)
+    if user is None:
+        try:
+            u = User.objects.get(last_name=identifier)
+            user = authenticate(request, username=u.username, password=password)
+        except User.DoesNotExist:
+            pass
+
     if user:
         login(request, user)
         if user.is_staff:
             return redirect("admin_dashboard")
         return redirect("customer_dashboard")
+
     messages.error(request, "Invalid login credentials.")
     return redirect("login")
 
@@ -76,10 +98,9 @@ def admin_dashboard(request):
     }
     return render(request, "forum/admin_dashboard.html", context)
 
-
 @user_passes_test(lambda u: u.is_staff)
 def manage_users(request):
-    users = User.objects.all()
+    users = User.objects.all().order_by("id")
     return render(request, "forum/admin_manage_users.html", {"users": users})
 
 
@@ -191,16 +212,20 @@ def customer_dashboard(request):
 def profile(request):
     return render(request, "forum/profile.html")
 
-
 @login_required
 def contact_admin(request):
+    admin_whatsapp = "+233556025786"
+
     if request.method == "POST":
         subject = request.POST.get('subject')
         message = request.POST.get('message')
         Message.objects.create(user=request.user, subject=subject, message=message)
         messages.success(request, "Message sent to admin successfully!")
         return redirect("contact_admin")
-    return render(request, "forum/contact_admin.html")
+
+    return render(request, "forum/contact_admin.html", {
+        "admin_whatsapp": admin_whatsapp
+    })
 
 
 # ----------------- FORUM -----------------
@@ -223,14 +248,18 @@ def forum_detail(request, pk):
 @user_passes_test(lambda u: u.is_staff)
 def edit_user(request, pk):
     user = get_object_or_404(User, pk=pk)
+
     if request.method == "POST":
-        user.username = request.POST.get("username")
-        user.email = request.POST.get("email")
+        user.username = request.POST.get("username", "").strip()
+        user.email = request.POST.get("email", "").strip()
+        user.last_name = request.POST.get("phone", "").strip()  # UPDATE PHONE
         user.is_staff = True if request.POST.get("is_staff") == "on" else False
         user.save()
-        messages.success(request, "User updated successfully.")
-    return redirect("manage_users")
 
+        messages.success(request, "User updated successfully.")
+        return redirect("manage_users")
+
+    return render(request, "forum/admin_edit_user.html", {"user": user})
 
 @user_passes_test(lambda u: u.is_staff)
 def delete_user(request, pk):
