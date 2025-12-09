@@ -11,6 +11,11 @@ from django.http import HttpResponse
 
 ## ----------------- AUTH -----------------
 def signup(request):
+    """
+    Handles user registration. 
+    Stores phone number in last_name field.
+    Redirects to login page after successful signup.
+    """
     if request.method == "POST":
         form = SignupForm(request.POST)
         if form.is_valid():
@@ -20,14 +25,22 @@ def signup(request):
             phone = form.cleaned_data["phone"]
             password = form.cleaned_data["password1"]
 
-            # Create user
+            # Check if username or email already exists
+            if User.objects.filter(username=username).exists():
+                messages.error(request, "Username already exists.")
+                return render(request, "forum/register.html", {"form": form})
+
+            if User.objects.filter(email=email).exists():
+                messages.error(request, "Email already in use.")
+                return render(request, "forum/register.html", {"form": form})
+
+            # Create new user
             user = User.objects.create_user(
                 username=username,
                 email=email,
                 password=password
             )
-            # Store phone in last_name
-            user.last_name = phone
+            user.last_name = phone  # store phone in last_name
             user.save()
 
             messages.success(request, "Account created successfully! You can now log in.")
@@ -41,14 +54,19 @@ def signup(request):
 
 
 def login_view(request):
+    """
+    Handles login using username or phone number.
+    Redirects staff to admin dashboard, customers to customer dashboard.
+    """
     if request.method == "GET":
         return render(request, "forum/login.html")
 
     identifier = request.POST.get("identifier", "").strip()  # username or phone
     password = request.POST.get("password", "").strip()
+
     user = None
 
-    # Try to authenticate via username
+    # Try username first
     try:
         u = User.objects.get(username=identifier)
         user = authenticate(request, username=u.username, password=password)
@@ -71,7 +89,6 @@ def login_view(request):
 
     messages.error(request, "Invalid login credentials.")
     return redirect("login")
-
 def logout_view(request):
     logout(request)
     messages.success(request, "Logged out successfully.")
