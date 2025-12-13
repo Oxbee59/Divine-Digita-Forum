@@ -39,4 +39,5 @@ urlpatterns = [
     # -------------------- FORUM --------------------
     path('forum/', views.forum_index, name='forum_index'),
     path('forum/<int:pk>/', views.forum_detail, name='forum_detail'),
+    path("health/", views.health_check, name="health_check"),
 ]

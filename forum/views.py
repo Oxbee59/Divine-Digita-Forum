@@ -7,40 +7,31 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import UploadItem, Category, Message, Comment
 from .forms import SignupForm, UploadItemForm, CategoryForm, MessageForm, CommentForm
 from django.http import HttpResponse
+from django.http import JsonResponse
 
 
-## ----------------- AUTH -----------------
+# ----------------- SIGNUP -----------------
 def signup(request):
     """
-    Handles user registration. 
-    Stores phone number in last_name field.
-    Redirects to login page after successful signup.
+    Simplified signup: creates a new user with any provided credentials.
+    Phone number is stored in last_name field.
+    Redirects to login after success.
     """
     if request.method == "POST":
         form = SignupForm(request.POST)
         if form.is_valid():
-            # Extract cleaned data
             username = form.cleaned_data["username"]
             email = form.cleaned_data["email"]
             phone = form.cleaned_data["phone"]
             password = form.cleaned_data["password1"]
 
-            # Check if username or email already exists
-            if User.objects.filter(username=username).exists():
-                messages.error(request, "Username already exists.")
-                return render(request, "forum/register.html", {"form": form})
-
-            if User.objects.filter(email=email).exists():
-                messages.error(request, "Email already in use.")
-                return render(request, "forum/register.html", {"form": form})
-
-            # Create new user
+            # Create user without validation conflicts
             user = User.objects.create_user(
                 username=username,
                 email=email,
                 password=password
             )
-            user.last_name = phone  # store phone in last_name
+            user.last_name = phone  # store phone
             user.save()
 
             messages.success(request, "Account created successfully! You can now log in.")
@@ -53,27 +44,27 @@ def signup(request):
     return render(request, "forum/register.html", {"form": form})
 
 
+# ----------------- LOGIN -----------------
 def login_view(request):
     """
-    Handles login using username or phone number.
+    Simplified login: accepts username or phone number.
     Redirects staff to admin dashboard, customers to customer dashboard.
     """
     if request.method == "GET":
         return render(request, "forum/login.html")
 
-    identifier = request.POST.get("identifier", "").strip()  # username or phone
+    identifier = request.POST.get("identifier", "").strip()
     password = request.POST.get("password", "").strip()
-
     user = None
 
-    # Try username first
+    # Try username
     try:
         u = User.objects.get(username=identifier)
         user = authenticate(request, username=u.username, password=password)
     except User.DoesNotExist:
         pass
 
-    # If username failed, try phone number (stored in last_name)
+    # Try phone (last_name)
     if user is None:
         try:
             u = User.objects.get(last_name=identifier)
@@ -83,16 +74,21 @@ def login_view(request):
 
     if user:
         login(request, user)
+        # Staff redirect
         if user.is_staff:
             return redirect("admin_dashboard")
         return redirect("customer_dashboard")
 
     messages.error(request, "Invalid login credentials.")
     return redirect("login")
+
+
+# ----------------- LOGOUT -----------------
 def logout_view(request):
     logout(request)
     messages.success(request, "Logged out successfully.")
     return redirect("login")
+
 
 # ----------------- SUPERADMIN -----------------
 @user_passes_test(lambda u: u.is_staff)
@@ -302,3 +298,10 @@ def create_admin_temp(request):
     )
 
     return HttpResponse("Superuser created successfully!")
+
+def health_check(request):
+    """
+    Simple health check endpoint for uptime monitoring.
+    Returns JSON status.
+    """
+    return JsonResponse({"status": "ok"})
